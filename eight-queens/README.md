@@ -7,19 +7,23 @@
 
 实验结果
 ---
-测试系统为 OS X
-
+测试系统: OS X
+处理器: 2.7 GHz Intel Core i5
+C++编译器: Apple LLVM version 8.0.0 (clang-800.0.42.1)
 
 ### C++
 - 棋盘大小13
+
 Solution num: 73712
 elapsed time = 0.504258 seconds
 
 - 棋盘大小15
+
 Solution num: 2279184
 elapsed time = 19.6999 seconds
 
 ### Python
 - 棋盘大小13
-73712
-27.48484206199646
+
+Solution num: 73712
+elapsed time = 27.48484206199646 seconds
