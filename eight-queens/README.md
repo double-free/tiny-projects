@@ -9,7 +9,7 @@
 ---
 测试系统: OS X </br>
 处理器: 2.7 GHz Intel Core i5 </br>
-C++ 编译器: Apple LLVM version 8.0.0 (clang-800.0.42.1)
+C++ 编译器: Apple LLVM version 8.0.0 (clang-800.0.42.1) </br>
 Golang 版本: go1.8.1 darwin/amd64 
 
 ### C++
