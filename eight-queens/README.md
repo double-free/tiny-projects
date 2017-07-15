@@ -9,7 +9,8 @@
 ---
 测试系统: OS X </br>
 处理器: 2.7 GHz Intel Core i5 </br>
-C++编译器: Apple LLVM version 8.0.0 (clang-800.0.42.1)
+C++ 编译器: Apple LLVM version 8.0.0 (clang-800.0.42.1)
+Golang 版本: go1.8.1 darwin/amd64 
 
 ### C++
 - 棋盘大小13 </br>
@@ -20,7 +21,21 @@ elapsed time = 0.504258 seconds
 Solution num: 2279184 </br>
 elapsed time = 19.6999 seconds
 
+### Golang
+- 棋盘大小13 </br>
+Solution num: 73712 </br>
+elapsed time = 0.351473 seconds
+
+- 棋盘大小15 </br>
+Solution num: 2279184 </br>
+elapsed time = 14.468555985 seconds
+
 ### Python
 - 棋盘大小13 </br>
 Solution num: 73712 </br>
 elapsed time = 27.48484206199646 seconds
+
+
+结论
+---
+目前看来竟然是 Golang 最好。感觉肯定是 C++ 代码有问题。还需进一步验证。
