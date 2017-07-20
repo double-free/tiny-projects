@@ -42,7 +42,7 @@ public:
       freeSlots_ = freeSlots_->next;
       return result;
     } else {
-      // freeSlots 还未初始化，即还没有 deallocate 发生
+      // freeSlots 还未初始化或者已经耗尽
       if (currentSlot_ >= lastSlot_) {
         allocateBlock();
       }
