@@ -28,7 +28,7 @@
   MemoryPool& operator=(const MemoryPool&& mp) noexcept;
 ```
 参考 [stackoverflow 上的相关问题](https://stackoverflow.com/questions/5513881/meaning-of-delete-after-function-declaration)。一句话总结就是禁用函数。
-以上代码实际上就是禁用拷贝赋值，仅使用移动赋值。这是显然的，内存池拷贝代价太大。
+以上代码实际上就是禁用拷贝赋值，仅使用移动赋值。这是显然的，内存池拷贝代价太大而且毫无意义。
 
 ### static_assert 用法
 ```c++
