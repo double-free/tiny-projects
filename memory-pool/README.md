@@ -2,7 +2,6 @@
 ---
 实际上是对以下开源代码的学习。毕竟水平有限，能搞懂轮子的原理就不错了，不指望能造个更好的轮子。按自己的理解把代码重写了一遍，添加了中文注释。下面放链接。
 1. [原始项目](https://github.com/cacay/MemoryPool)
-2. [我的项目](https://github.com/double-free/tiny-projects/tree/master/memory-pool)
 
 原理
 ---
