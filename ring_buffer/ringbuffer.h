@@ -18,18 +18,11 @@ public:
       |_占用_|__空闲__|_占用_|   occupied = in + size - out
       由于是无符号类型, in < out 时会自动 wrap-around
     */
+    std::lock_guard<std::mutex> lg(mu_);
     return in_ - out_;
   }
 
-  /*
-     _____out______in_____
-    |_空闲_|__占用__|_空闲_|   free_size = out + size - in
-
-     _____in______out_____
-    |_占用_|__空闲__|_占用_|   free_size = out - in
-  */
   void putData(unsigned char* data, size_t datalen);
-
   void getData(unsigned char* buf, size_t datalen);
 
 private:
@@ -39,7 +32,20 @@ private:
   size_t out_;
   std::mutex mu_;
 
-  inline bool is_power_of_2(size_t x) {
+  inline bool is_power_of_2_(size_t x) {
     return x != 0 && (x & (x-1)) == 0;
   }
+
+
+  /*
+     _____out______in_____
+    |_空闲_|__占用__|_空闲_|   free_size = out + size - in
+
+     _____in______out_____
+    |_占用_|__空闲__|_占用_|   free_size = out - in
+  */
+  // put data without lock
+  void putData_(unsigned char* data, size_t datalen);
+  // get data without lock
+  void getData_(unsigned char* buf, size_t datalen);
 }
