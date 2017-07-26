@@ -1,5 +1,6 @@
 #include "ringbuffer.h"
 #include <assert.h>
+#include <cstring> // for memcpy
 
 RingBuffer::RingBuffer(size_t size): size_(size) {
   assert(is_power_of_2_(size_));
@@ -15,13 +16,13 @@ RingBuffer::~RingBuffer() {
   }
 }
 
-void RingBuffer::copy_in_(unsigned char* data, size_t datalen, size_t in, size_t out) {
-  size_t len = min(datalen, size_ - (in & (size_ - 1)));
+void RingBuffer::copy_in_(char* data, size_t datalen, size_t in, size_t out) {
+  size_t len = MIN(datalen, size_ - (in & (size_ - 1)));
   memcpy(buffer_ + (in & (size_-1)), data, len);
   memcpy(buffer_, data + len, datalen - len);
 }
 
-void RingBuffer::putData(unsigned char* data, size_t datalen) {
+void RingBuffer::putData(char* data, size_t datalen) {
   if (data == nullptr || buffer_ == nullptr) return;
   size_t in, out;
   {
@@ -39,11 +40,11 @@ void RingBuffer::putData(unsigned char* data, size_t datalen) {
 
 void RingBuffer::copy_out_(char* buf, size_t datalen, size_t in, size_t out) {
   size_t len = MIN(datalen, size_ - (out & (size_ - 1)));
-  memcpy(buf, buffer_ + (out & (size - 1)), len);
+  memcpy(buf, buffer_ + (out & (size_ - 1)), len);
   memcpy(buf + len, buffer_, datalen - len);
 }
 
-void RingBuffer::getData(unsigned char* buf, size_t datalen) {
+void RingBuffer::getData(char* buf, size_t datalen) {
   if (buf == nullptr || buffer_ == nullptr) return;
   size_t in, out;
   {
