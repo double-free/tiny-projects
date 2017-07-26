@@ -2,6 +2,7 @@
 #include <thread>
 #include <random>
 #include <chrono>
+#include <cstddef>
 
 void putDataTo(RingBuffer* ringbuffer) {
   const std::string s = "Hello, SB.";
@@ -18,8 +19,9 @@ void getDataFrom(RingBuffer* ringbuffer) {
   std::uniform_int_distribution<int> uid(10, 100);
   for (int i=0; i<1000; i++) {
     char buffer[20];
+    size_t before = ringbuffer->dataLength();
     ringbuffer->getData(buffer, 11);
-    printf("Get: %s\n", buffer);
+    printf("Get: %s, Size %lu -> %lu\n", buffer, before, ringbuffer->dataLength());
     std::this_thread::sleep_for(std::chrono::milliseconds(uid(dre)));
   }
 }
