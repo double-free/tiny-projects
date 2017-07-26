@@ -45,7 +45,7 @@ private:
     |_占用_|__空闲__|_占用_|   free_size = out - in
   */
   // put data without lock
-  void putData_(unsigned char* data, size_t datalen);
+  void copy_in_(unsigned char* data, size_t datalen);
   // get data without lock
-  void getData_(unsigned char* buf, size_t datalen);
+  void copy_out_(unsigned char* buf, size_t datalen);
 }
