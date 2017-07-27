@@ -10,3 +10,6 @@ c++ / python / Golang 效率对比及讨论
 
 - **memory-pool** </br>
 C++ 内存池的实现以及源码分析
+
+- **ring-buffer** </br>
+C++ 实现的环形缓冲区，在单生产者单消费者情况下不需要锁
