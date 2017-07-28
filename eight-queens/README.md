@@ -14,6 +14,7 @@ Golang 版本: go1.8.1 darwin/amd64 </br>
 Python 版本: 3.5.1
 
 ### C++
+编译器不优化：<br/>
 - 棋盘大小13 </br>
 Solution num: 73712 </br>
 elapsed time = 0.504258 seconds
@@ -21,6 +22,15 @@ elapsed time = 0.504258 seconds
 - 棋盘大小15 </br>
 Solution num: 2279184 </br>
 elapsed time = 19.6999 seconds
+
+-O2 优化: <br/>
+- 棋盘大小13 </br>
+Solution num: 73712 </br>
+elapsed time = 0.31887 seconds
+
+- 棋盘大小15 </br>
+Solution num: 2279184 </br>
+elapsed time = 10.1004 seconds
 
 ### Golang
 - 棋盘大小13 </br>
@@ -39,4 +49,4 @@ elapsed time = 27.48484206199646 seconds
 
 结论
 ---
-目前看来竟然是 Golang 最好。感觉肯定是 C++ 代码有问题。还需进一步验证。
+开启编译器优化后 C/C++ 优势还是相当明显的。
