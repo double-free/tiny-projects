@@ -6,10 +6,11 @@ and latency of the exclusive access. So, instead of using mutexes and lock,
 it might be worth using atomics instead.
 
 于是我好奇，到底慢了多少。就设计了这个试验。
+
+实验
+---
 两个线程作自增操作 10 万次，对比无同步，用锁同步，用原子操作同步三种方式的效率。
 
-结果
----
 硬件配置一致。均为 2 核 i5 处理器。
 
 - **OS X系统**
