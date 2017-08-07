@@ -1,0 +1,32 @@
+简介
+---
+在看 c++11 标准库的时候看到一句话(page 1012)：
+>a mutex might be a relatively expensive operation in both necessary resources
+and latency of the exclusive access. So, instead of using mutexes and lock,
+it might be worth using atomics instead.
+
+于是我好奇，到底慢了多少。就设计了这个试验。
+两个线程作自增操作 10 万次，对比无同步，用锁同步，用原子操作同步三种方式的效率。
+
+结果
+---
+硬件配置一致。均为 2 核 i5 处理器。
+
+- **OS X系统**
+```
+unsafe add: result = 54204, time = 0.000839857 seconds
+mutex add: result = 100000, time = 0.337428 seconds
+atomic add: result = 100000, time = 0.00400076 seconds
+```
+
+- **Ubuntu系统**
+```
+unsafe add: result = 50000, time = 0.000760134 seconds
+mutex add: result = 100000, time = 0.00995328 seconds
+atomic add: result = 100000, time = 0.00158995 seconds
+```
+
+结论
+---
+都可以得出 `锁 >> 原子操作 > 无同步` 的结论。
+但是 OS X 系统的锁操作明显慢于 Linux 系统。
