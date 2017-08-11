@@ -1,8 +1,8 @@
 参考
 ---
-[中文资料](http://www.cnblogs.com/huxiao-tee/p/4660352.html)
-[英文资料](https://www.safaribooksonline.com/library/view/linux-system-programming/0596009585/ch04s03.html)
-[使用场景](https://stackoverflow.com/questions/258091/when-should-i-use-mmap-for-file-access)
+[中文资料](http://www.cnblogs.com/huxiao-tee/p/4660352.html)<br/>
+[英文资料](https://www.safaribooksonline.com/library/view/linux-system-programming/0596009585/ch04s03.html)<br/>
+[使用场景](https://stackoverflow.com/questions/258091/when-should-i-use-mmap-for-file-access)<br/>
 
 介绍
 ---
@@ -20,6 +20,9 @@
 
 ![mmap 原理](http://upload-images.jianshu.io/upload_images/4482847-a04d010b9c8e2391.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
+动机
+---
+希望能实现文件的快速并行写入。
 
 使用方法
 ---
@@ -78,15 +81,11 @@ void * mmap (void *addr,
 long page_size = sysconf(_SC_PAGESIZE);
 ```
 
-代码实现
----
-因为项目需求并发写入，为了提高性能，实现了一个可以并行写入的mmap。
-具体代码可以查看[我的Github]。
 
 遇到的问题
 ---
 
-1. 写入时发生错误
+1. __写入时发生错误__
 ```
 bus error(core dump)
 ```
@@ -102,7 +101,7 @@ stackoverflow 大佬的原话：
   write(fd,"",1);
 ```
 
-2. 文件权限设置
+2. __文件权限设置__
 ```
 int fd = open(file_path_.c_str(), O_RDWR | O_CREAT | O_TRUNC, 0644);
 ```
