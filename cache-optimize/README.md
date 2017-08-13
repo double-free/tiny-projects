@@ -13,10 +13,13 @@ double matrix2[MATRIX_SIZE][MATRIX_SIZE];
 double result[MATRIX_SIZE][MATRIX_SIZE];
 
 void initMat() {
+  std::random_device rd;
+  std::default_random_engine dre(rd());
+  std::uniform_real_distribution<double> urd(0.0, 1.0);
   for (int i = 0; i < MATRIX_SIZE; ++i) {
     for (int j = 0; j < MATRIX_SIZE; ++j) {
-      matrix1[i][j] = 1.0;
-      matrix2[i][j] = 1.0;
+      matrix1[i][j] = urd(dre);
+      matrix2[i][j] = urd(dre);
     }
   }
 }
