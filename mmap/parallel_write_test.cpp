@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <cstring>
+#include <fstream>
 #include "mmapper.h"
 
 #define FILE_SIZE_LIM 1<<30 // 最多 1G
@@ -14,29 +15,30 @@ int main(int argc, const char* argv[]) {
   }
 
   mem::Writer writer(FILE_SIZE_LIM, std::string(argv[1]));
-  std::atomic<int> total(0);
+  std::atomic<size_t> total(0);
 
   int THREAD_NUM = std::thread::hardware_concurrency();
 
-  // 要写入的单词
-  const char* words[] = {
-    "hello ",
-    "dog_and_cat ",
-    "inu_to_neko ",
-    "nb_and_sb "
-  };
+  // 读取要写入的单词
+  std::ifstream infile("words.txt");
+  std::vector<std::string> words;
+  std::string line;
+  while (getline(infile, line)) {
+    words.push_back(std::move(line));
+  }
 
   std::vector<std::thread> threads;
   for (int i=0; i<THREAD_NUM; i++) {
     threads.emplace_back([&](){
-      const char *s = words[i % (sizeof(words)/sizeof(words[0]))];
-      int len = strlen(s);
+      std::string word_with_space = words[i % words.size()] + " ";
+      const char *s = word_with_space.c_str();
+      size_t len = word_with_space.size();
       for (int i=0; i< 1000; i++) {
         writer.write_data(s, len);
       }
-      int byte_num = len*1000;
+      size_t byte_num = len*1000;
       total += byte_num;
-      printf("Thread %08x put %d bytes to file %s\n",
+      printf("Thread %08x put %lu bytes to file %s\n",
        std::this_thread::get_id(), byte_num, argv[1]);
     });
   }
@@ -45,5 +47,6 @@ int main(int argc, const char* argv[]) {
     t.join();
   }
 
+  printf("Write complete, %lu bytes in total\n", total.load());
   return 0;
 }
