@@ -102,7 +102,7 @@ stackoverflow 大佬的原话：
 ```
 
 2. __文件权限设置__
-```
+```c
 int fd = open(file_path_.c_str(), O_RDWR | O_CREAT | O_TRUNC, 0644);
 ```
 打开的时候忘了加 0644 设置权限。
@@ -110,7 +110,7 @@ int fd = open(file_path_.c_str(), O_RDWR | O_CREAT | O_TRUNC, 0644);
 3. __文件大小__
 
 由于文件最初利用 lseek 扩张了一次，中间有大量的'\0'段。导致文件在验证中出错，而且打开缓慢。
-```
+```c
 // resize the file to actual size
 truncate(file_path_.c_str(), cur_pos_.load());
 ```
