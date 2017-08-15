@@ -15,19 +15,21 @@ it might be worth using atomics instead.
 
 - **OS X系统**
 ```
-unsafe add: result = 54204, time = 0.000839857 seconds
-mutex add: result = 100000, time = 0.337428 seconds
-atomic add: result = 100000, time = 0.00400076 seconds
+unsafe add: result = 55562, time = 0.000818593 seconds
+mutex add: result = 100000, time = 0.330456 seconds
+atomic add: result = 100000, time = 0.0035597 seconds
+spinlock add: result = 100000, time = 0.0101915 seconds
 ```
 
 - **Ubuntu系统**
 ```
-unsafe add: result = 50000, time = 0.000760134 seconds
-mutex add: result = 100000, time = 0.00995328 seconds
-atomic add: result = 100000, time = 0.00158995 seconds
+unsafe add: result = 61700, time = 0.000705618 seconds
+mutex add: result = 100000, time = 0.0101063 seconds
+atomic add: result = 100000, time = 0.00189584 seconds
+spinlock add: result = 100000, time = 0.0032098 seconds
 ```
 
 结论
 ---
-都可以得出 `锁 >> 原子操作 > 无同步` 的结论。
+都可以得出 `锁 >> 自旋锁 > 原子操作 > 无同步` 的结论。
 但是 OS X 系统的锁操作明显慢于 Linux 系统。
