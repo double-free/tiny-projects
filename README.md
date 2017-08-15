@@ -15,7 +15,7 @@ C++ 内存池的实现以及源码分析
 C++ 实现的环形缓冲区，在单生产者单消费者情况下不需要锁
 
 - **sync-efficiency** </br>
-比较了 无同步，mutex, atomic 三种方式的效率。
+比较了 无同步，mutex, atomic, spinlock 四种方式的效率。
 
 - **mmap** </br>
 使用 mmap 实现 lock-free 的文件并行写入。
