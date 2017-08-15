@@ -108,6 +108,7 @@ int fd = open(file_path_.c_str(), O_RDWR | O_CREAT | O_TRUNC, 0644);
 打开的时候忘了加 0644 设置权限。
 
 3. __文件大小__
+
 由于文件最初利用 lseek 扩张了一次，中间有大量的'\0'段。导致文件在验证中出错，而且打开缓慢。
 ```
 // resize the file to actual size
@@ -116,6 +117,7 @@ truncate(file_path_.c_str(), cur_pos_.load());
 在析构函数中增加 truncate 解决。
 
 4. __remap 过程中的 memcpy__
+
 由于 remap 可能会切换地址，导致之前 map 的地址失效<br/>
 而 memcpy 在设计中又是异步，所以会导致向失效的地址中写东西的情况发生，导致 segmentation fault。<br/>
 解决方法：
@@ -125,5 +127,6 @@ truncate(file_path_.c_str(), cur_pos_.load());
 更新
 ---
 为了处理文件超出初始分配的大小的问题，实现了 remap 的逻辑 <br/>
+如果确保不需要 remap，整个过程可以只用一个 atomic 的 offset <br/>
 关键的，实现了 spinlock 来保证各个线程的同步，保证在 remap 的过程中其他线程不再写入数据 <br/>
 spinlock 可以采用 atomic_flag 来实现
