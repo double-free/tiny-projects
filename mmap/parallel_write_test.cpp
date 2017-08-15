@@ -4,9 +4,11 @@
 #include <vector>
 #include <cstring>
 #include <fstream>
+#include <chrono>
+
 #include "mmapper.h"
 
-#define FILE_SIZE_LIM 1<<30 // 最多 1G
+#define FILE_SIZE_LIM 1<<10
 
 int main(int argc, const char* argv[]) {
   if (argc != 2) {
@@ -27,6 +29,7 @@ int main(int argc, const char* argv[]) {
     words.push_back(std::move(line));
   }
 
+  auto start = std::chrono::steady_clock::now();
   std::vector<std::thread> threads;
   for (int i=0; i<THREAD_NUM; i++) {
     threads.emplace_back([&](){
@@ -47,6 +50,8 @@ int main(int argc, const char* argv[]) {
     t.join();
   }
 
-  printf("Write complete, %d threads write %lu bytes in total\n", THREAD_NUM, total.load());
+  auto end = std::chrono::steady_clock::now();
+  std::chrono::duration<double> diff = end-start;
+  printf("Write complete, %d threads write %lu bytes in %.3f ms\n", THREAD_NUM, total.load(), diff*1000);
   return 0;
 }

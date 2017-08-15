@@ -6,7 +6,7 @@ INC=
 LIB= -lpthread
 CC=g++ -std=c++0x
 # display all warnings
-CC_FLAG=-Wall
+CC_FLAG=-Wall -g
 
 PRG=mmap_test
 OBJ=parallel_write_test.o mmapper.o
