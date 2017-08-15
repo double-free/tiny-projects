@@ -41,7 +41,10 @@ Writer::~Writer() {
 }
 
 void Writer::write_data(const char* data, size_t len) {
-  int old_pos = cur_pos_.load();
+  /* 这两条语句中间可能被打断，并不是安全的
+  size_t old_pos = cur_pos_.load();
   cur_pos_ += len;
+  */
+  size_t old_pos = cur_pos_.fetch_add(len);
   std::memcpy((char *)mem_file_ptr_ + old_pos, data, len);
 }

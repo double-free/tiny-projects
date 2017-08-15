@@ -14,11 +14,9 @@ def verify(txt_file):
 
     with open(txt_file) as f:
         for word in read_by_tokens(f):
+            word = word.strip()
             if word not in words:
-                if (len(word) > 100):
-                    print('word too long')
-                else:
-                    print('word ', word, ' not in ', words)
+                print('word "', word, '" not in ', words)
                 return False
         print('File check success')
         return True

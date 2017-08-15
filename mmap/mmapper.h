@@ -14,5 +14,6 @@ private:
   void* mem_file_ptr_;
   std::string file_path_;
   std::atomic<size_t> cur_pos_;
+
 };
 }

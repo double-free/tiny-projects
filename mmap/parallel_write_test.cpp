@@ -47,6 +47,6 @@ int main(int argc, const char* argv[]) {
     t.join();
   }
 
-  printf("Write complete, %lu bytes in total\n", total.load());
+  printf("Write complete, %d threads write %lu bytes in total\n", THREAD_NUM, total.load());
   return 0;
 }
