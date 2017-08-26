@@ -121,8 +121,8 @@ truncate(file_path_.c_str(), cur_pos_.load());
 由于 remap 可能会切换地址，导致之前 map 的地址失效<br/>
 而 memcpy 在设计中又是异步，所以会导致向失效的地址中写东西的情况发生，导致 segmentation fault。<br/>
 解决方法：
-暂时只能先用个引用计数，通过轮询确定为 0 再进行 remap
-更优方法可以采用 shared_ptr 自然地实现计数
+暂时只能先用个引用计数，通过轮询确定为 0 再进行 remap <br/>
+不可以使用 shared_ptr 实现引用计数，因为其引用计数的内存模型是 std::memory_order_relax，可能会乱序导致出错。
 
 更新
 ---
