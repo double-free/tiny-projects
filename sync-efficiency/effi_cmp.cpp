@@ -71,7 +71,7 @@ void atomic_add() {
   for (int i = 0; i < THREAD_NUM; i++) {
     threads[i] = std::thread([&]() {
       for (int j = 0; j < per_thread_count; j++) {
-        total += 1;
+        total.fetch_add(1, std::memory_order_relaxed);
       }
     });
   }
