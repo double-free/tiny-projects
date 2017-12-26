@@ -269,6 +269,21 @@ PathPlanner::gradient_descent(GridMap &gm, GridCell *startCell, int stepSize) {
   return ret;
 }
 
+bool PathPlanner::updateArrivalTimeWithFlag(GridMap& gm, GridCell* c) {
+  double old_arrivalTime = c->arrivalTime();
+  updateArrivalTime(gm, c);
+  double new_arrivalTime = c->arrivalTime();
+  bool changed = false;
+  if (isInf(old_arrivalTime) && !isInf(new_arrivalTime)) {
+    changed = true;
+  } else if (old_arrivalTime / new_arrivalTime >= 1.01) {
+    changed = true;
+  } else {
+    changed = false;
+  }
+  return changed;
+}
+
 //------------------------------- APIs --------------------------------------
 // fsm
 void PathPlanner::fsm(GridMap &gm, int limCount) {
@@ -314,19 +329,11 @@ void PathPlanner::fsm(GridMap &gm, int limCount) {
       }
       for (int i = iStart; 0 <= i && i < gm.rows(); i += iStep) {
         for (int j = jStart; 0 <= j && j < gm.cols(); j += jStep) {
-          GridCell *curCell = gm.getCellByRowCol(i, j);
-          double old_arrivalTime = curCell->arrivalTime();
-          updateArrivalTime(gm, curCell);
-          double new_arrivalTime = curCell->arrivalTime();
-          if (isInf(old_arrivalTime) && isInf(new_arrivalTime)) {
-
-          } else if (isInf(old_arrivalTime)) {
-            //
-            changed = true;
-          } else if (old_arrivalTime / new_arrivalTime >= 1.01) {
-            changed = true;
+          GridCell* curCell = gm.getCellByRowCol(i, j);
+          if (changed == false) {
+            changed |= updateArrivalTimeWithFlag(gm, curCell);
           } else {
-            // never goes here
+            updateArrivalTime(gm, curCell);
           }
         }
       }
@@ -342,11 +349,12 @@ void PathPlanner::fsm(GridMap &gm, int limCount) {
 
 // paralled fsm
 void PathPlanner::pfsm(GridMap &gm, int limCount) {
-  while (limCount) {
-    limCount--;
+  int curCount = 0;
+  while (curCount < limCount) {
     int diagNum = gm.cols() + gm.rows() - 1;
     int lv_start, lv_end, lv_step;
 
+    bool changed = false;
     // 右下
     lv_start = 0;
     lv_end = diagNum - 1;
@@ -357,7 +365,13 @@ void PathPlanner::pfsm(GridMap &gm, int limCount) {
       int i_end = std::min(gm.rows() - 1, level);
       for (int i = i_start; i <= i_end; i++) {
         int j = level - i;
-        updateArrivalTime(gm, gm.getCellByRowCol(i, j));
+        // updateArrivalTime(gm, gm.getCellByRowCol(i, j));
+        GridCell* curCell = gm.getCellByRowCol(i, j);
+        if (changed == false) {
+          changed |= updateArrivalTimeWithFlag(gm, curCell);
+        } else {
+          updateArrivalTime(gm, curCell);
+        }
       }
     }
 
@@ -367,10 +381,16 @@ void PathPlanner::pfsm(GridMap &gm, int limCount) {
     lv_step = -1;
     for (int level = lv_start; level >= lv_end; level += lv_step) {
       int i_start = std::max(0, level);
-      int i_end = std::min(gm.rows() - 1, gm.rows() + level);
+      int i_end = std::min(gm.rows() - 1, gm.cols() - 1 + level);
       for (int i = i_start; i <= i_end; i++) {
         int j = i - level;
-        updateArrivalTime(gm, gm.getCellByRowCol(i, j));
+        // updateArrivalTime(gm, gm.getCellByRowCol(i, j));
+        GridCell* curCell = gm.getCellByRowCol(i, j);
+        if (changed == false) {
+          changed |= updateArrivalTimeWithFlag(gm, curCell);
+        } else {
+          updateArrivalTime(gm, curCell);
+        }
       }
     }
 
@@ -383,7 +403,13 @@ void PathPlanner::pfsm(GridMap &gm, int limCount) {
       int i_end = std::min(gm.rows() - 1, level);
       for (int i = i_start; i <= i_end; i++) {
         int j = level - i;
-        updateArrivalTime(gm, gm.getCellByRowCol(i, j));
+        // updateArrivalTime(gm, gm.getCellByRowCol(i, j));
+        GridCell* curCell = gm.getCellByRowCol(i, j);
+        if (changed == false) {
+          changed |= updateArrivalTimeWithFlag(gm, curCell);
+        } else {
+          updateArrivalTime(gm, curCell);
+        }
       }
     }
 
@@ -393,21 +419,34 @@ void PathPlanner::pfsm(GridMap &gm, int limCount) {
     lv_step = 1;
     for (int level = lv_start; level <= lv_end; level += lv_step) {
       int i_start = std::max(0, level);
-      int i_end = std::min(gm.rows() - 1, gm.rows() + level);
+      int i_end = std::min(gm.rows() - 1, gm.cols() - 1 + level);
       for (int i = i_start; i <= i_end; i++) {
         int j = i - level;
-        updateArrivalTime(gm, gm.getCellByRowCol(i, j));
+        // updateArrivalTime(gm, gm.getCellByRowCol(i, j));
+        GridCell* curCell = gm.getCellByRowCol(i, j);
+        if (changed == false) {
+          changed |= updateArrivalTimeWithFlag(gm, curCell);
+        } else {
+          updateArrivalTime(gm, curCell);
+        }
       }
+    }
+
+    ++curCount;
+    if (changed == false) {
+      // 打破 while 循环
+      printf("fsm perfectly finished, sweep count = (%d / %d)\n", curCount,
+             limCount);
+      break;
     }
   }
 }
 
 // paralled fsm
-void PathPlanner::parallel_fsm(GridMap &gm, int limCount) {
+// 大于 thresh 则开始并行，避免线程开销
+void PathPlanner::parallel_fsm(GridMap &gm, int limCount, int thresh) {
 
   const int threadNum = std::thread::hardware_concurrency();
-
-  int thresh = 200; // 大于 200 则开始并行，避免线程开销
 
   ThreadPool thread_pool(threadNum);
 
@@ -448,7 +487,7 @@ void PathPlanner::parallel_fsm(GridMap &gm, int limCount) {
     lv_step = -1;
     for (int level = lv_start; level >= lv_end; level += lv_step) {
       int i_start = std::max(0, level);
-      int i_end = std::min(gm.rows() - 1, gm.rows() + level);
+      int i_end = std::min(gm.rows() - 1, gm.cols() - 1 + level);
       auto task = [&](int offset, int interval) {
         for (int i = i_start + offset; i <= i_end; i += interval) {
           int j = i - level;
@@ -498,7 +537,7 @@ void PathPlanner::parallel_fsm(GridMap &gm, int limCount) {
     lv_step = 1;
     for (int level = lv_start; level <= lv_end; level += lv_step) {
       int i_start = std::max(0, level);
-      int i_end = std::min(gm.rows() - 1, gm.rows() + level);
+      int i_end = std::min(gm.rows() - 1, gm.cols() - 1 + level);
       auto task = [&](int offset, int interval) {
         for (int i = i_start + offset; i <= i_end; i += interval) {
           int j = i - level;

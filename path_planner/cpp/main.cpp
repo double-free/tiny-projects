@@ -74,6 +74,7 @@ int main(int argc, char const *argv[]) {
 
   // 计算时间矩阵
   int limCount = cfg.GetInteger("Parameters", "fsmSweepCountLim", 100);
+  int thresh = cfg.GetInteger("Parameters", "parallelThresh", 1000);
   auto start = std::chrono::steady_clock::now();
   std::string method = cfg.Get("Parameters", "method", "");
   if (method == "fsm") {
@@ -81,7 +82,7 @@ int main(int argc, char const *argv[]) {
   } else if (method == "pfsm") {
     PathPlanner::pfsm(gm, limCount);
   } else if (method == "parallel_fsm") {
-    PathPlanner::parallel_fsm(gm, limCount);
+    PathPlanner::parallel_fsm(gm, limCount, thresh);
   } else if (method == "sfsm") {
     PathPlanner::sfsm(gm, limCount);
   } else if (method == "fmm") {

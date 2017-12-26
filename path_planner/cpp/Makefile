@@ -14,7 +14,7 @@ PRG=PathPlanner
 OBJ=main.o path_planner.o ../../ThirdParty/inih/ini.o ../../ThirdParty/inih/cpp/INIReader.o
 
 $(PRG):$(OBJ)
-	$(CC) $(INC) $(LIB) -o $@ $(OBJ)
+	$(CC) $(INC) -o $@ $(OBJ) $(LIB)
 
 .SUFFIXES: .c .o .cpp
 .cpp.o:

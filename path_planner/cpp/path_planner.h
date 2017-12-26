@@ -22,6 +22,8 @@ private:
   // 梯度下降计算路径
   static std::vector<std::pair<int, int>> gradient_descent(GridMap& gm, GridCell* startCell, int stepSize = 1);
 
+  // 用于fs的终止条件，更新点的同时返回是否发生改变
+  inline static bool updateArrivalTimeWithFlag(GridMap& gm, GridCell* c);
 public:
   // fsm，需要指明扫描多少次，对复杂地形扫描次数不够会导致结果不正确
   static void fsm(GridMap &gm, int limCount);
@@ -30,7 +32,7 @@ public:
   static void pfsm(GridMap &gm, int limCount);
 
   // parallel_fsm 真正用多线程实现的 fsm
-  static void parallel_fsm(GridMap &gm, int limCount);
+  static void parallel_fsm(GridMap &gm, int limCount, int parallelThresh);
 
   // squared fsm
   static void sfsm(GridMap &gm, int limCount);
