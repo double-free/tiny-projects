@@ -66,6 +66,9 @@ bool PathPlanner::updateArrivalTime(GridMap &gm, GridCell *c) {
   if (newTime < c->arrivalTime()) {
     c->setArrivalTime(newTime);
   }
+
+  // for multi-thread test, map should be less than 800*800
+  // std::this_thread::sleep_for(std::chrono::nanoseconds(1));
   return retFlag;
 }
 
@@ -349,6 +352,7 @@ void PathPlanner::fsm(GridMap &gm, int limCount) {
 
 // paralled fsm
 void PathPlanner::pfsm(GridMap &gm, int limCount) {
+  std::cout << "Using pfsm" << std::endl;
   int curCount = 0;
   while (curCount < limCount) {
     int diagNum = gm.cols() + gm.rows() - 1;
@@ -435,7 +439,7 @@ void PathPlanner::pfsm(GridMap &gm, int limCount) {
     ++curCount;
     if (changed == false) {
       // 打破 while 循环
-      printf("fsm perfectly finished, sweep count = (%d / %d)\n", curCount,
+      printf("pfsm perfectly finished, sweep count = (%d / %d)\n", curCount,
              limCount);
       break;
     }
@@ -447,7 +451,8 @@ void PathPlanner::pfsm(GridMap &gm, int limCount) {
 void PathPlanner::parallel_fsm(GridMap &gm, int limCount, int thresh) {
 
   const int threadNum = std::thread::hardware_concurrency();
-
+  // const int threadNum = 2;
+  std::cout << "Use parallel fsm: " << threadNum << " threads created..." << "\n";
   ThreadPool thread_pool(threadNum);
 
   while (limCount) {
