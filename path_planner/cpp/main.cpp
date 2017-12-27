@@ -93,7 +93,7 @@ int main(int argc, char const *argv[]) {
     auto ylim = std::make_pair(0.0, 1.0);
     int rowNum = (xlim.second - xlim.first)/delta;
     int colNum = (ylim.second - ylim.first)/delta;
-    gm.resize(rowNum, colNum);
+    gm.resize(rowNum, colNum, delta);
     for(int i=0; i<rowNum; i++) {
       for(int j = 0; j<colNum; j++) {
         int idx = i * colNum + j;
@@ -102,7 +102,8 @@ int main(int argc, char const *argv[]) {
         curCell->setVelocity(v(xlim.first + i*delta, ylim.first + j*delta));
       }
     }
-    // 设置终点
+
+    // 设置已知到达函数的点
     auto setMathCell = [&](double x, double y, double val) {
       int row = (x - xlim.first)/delta;
       int col = (y - ylim.first)/delta;
@@ -113,6 +114,16 @@ int main(int argc, char const *argv[]) {
     setMathCell(0.25, 0.75, 1);
     setMathCell(0.75, 0.25, 1);
     setMathCell(0.5, 0.5, 2);
+    // 左右边界
+    for (int i=0; i<gm.rows(); i++) {
+      gm.getCellByRowCol(i, 0)->setArrivalTime(0.0);
+      gm.getCellByRowCol(i, gm.cols()-1)->setArrivalTime(0.0);
+    }
+    // 上下边界
+    for (int j=0; j<gm.cols(); j++) {
+      gm.getCellByRowCol(0, j)->setArrivalTime(0.0);
+      gm.getCellByRowCol(gm.rows()-1, j)->setArrivalTime(0.0);
+    }
   }
 
   // 计算时间矩阵

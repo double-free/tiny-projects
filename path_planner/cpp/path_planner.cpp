@@ -54,12 +54,13 @@ bool PathPlanner::updateArrivalTime(GridMap &gm, GridCell *c) {
   double horMinT = findMinTime(leftCell, rightCell);
 
   double newTime = INF;
-  if (std::abs(verMinT - horMinT) >= 1.0 / cur_velocity) {
-    newTime = std::min(verMinT, horMinT) + 1.0 / cur_velocity;
+  double h = gm.gridSize();
+  if (std::abs(verMinT - horMinT) >= h / cur_velocity) {
+    newTime = std::min(verMinT, horMinT) + h / cur_velocity;
   } else {
     newTime = 0.5 * (verMinT + horMinT +
-                     sqrt(2.0 / cur_velocity / cur_velocity -
-                          (verMinT - horMinT) * (verMinT - horMinT)));
+                     sqrt(2.0 * std::pow(h / cur_velocity, 2) -
+                          std::pow(verMinT - horMinT, 2)));
   }
   // printf("cell in [%d, %d], old time = %.3f, new time = %.3f\n", row, col,
   // c->getArrivalTime(), newTime);

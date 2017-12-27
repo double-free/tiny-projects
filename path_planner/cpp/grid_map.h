@@ -7,14 +7,16 @@ public:
   GridMap() {
     rows_ = 0;
     cols_ = 0;
+    gridSize_ = 1.0;
   }
-  explicit GridMap(int rows, int cols):rows_(rows), cols_(cols) {
+  explicit GridMap(int rows, int cols, double gridSize = 1.0):rows_(rows), cols_(cols), gridSize_(gridSize) {
     cells_.resize(rows*cols);
   }
 
-  void resize(int rows, int cols) {
+  void resize(int rows, int cols, double gridSize = 1.0) {
     rows_ = rows;
     cols_ = cols;
+    gridSize_ = gridSize;
     cells_.resize(rows*cols);
   }
 
@@ -28,6 +30,10 @@ public:
 
   int cellNum() const {
     return cells_.size();
+  }
+
+  double gridSize() const {
+    return gridSize_;
   }
 
   GridCell* getCellByIndex(int idx) {
@@ -83,6 +89,7 @@ public:
 private:
   int rows_;
   int cols_;
+  double gridSize_;
   std::vector<GridCell> cells_;
   GridCell* dstCell_;
 };
