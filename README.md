@@ -25,3 +25,6 @@ C++ 实现的环形缓冲区，在单生产者单消费者情况下不需要锁
 
 - **producer-consumer** <br/>
 使用环形缓冲区的 producer-consumer pattern
+
+- **cpptimer** <br/>
+一个泛型实现的函数 wrapper，用于同时输出运行时间
